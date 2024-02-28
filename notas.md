@@ -19,10 +19,19 @@ npm run dev
 ```
 The console says that the application has started  http://localhost:5173/
 
+Dependencies
+```bash
+npm install axios
+npm install json-server --save-dev
+```
+
+SERVER
+JSON server
+``npm install -g json-server``
+
 ## NOTAS
 - Node.js is a JavaScript runtime environment
 - run js with: `node name_of_file.js`
 - array `push` vs `concat`
   - push: (functional programming) use of immutable data structures (inplace)
   - concat: creates a new array with the added item. (returns a new array)
-  
