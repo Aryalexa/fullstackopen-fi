@@ -25,9 +25,16 @@ npm install axios
 npm install json-server --save-dev
 ```
 
-SERVER
-JSON server
+## Add a "server"
+Install JSON server
 ``npm install -g json-server``
+add the script to `package.json` scripts.
+``    "server": "json-server -p3001 --watch db.json"``
+now we can do this to run it
+```bash
+npm run server
+```
+
 
 ## NOTAS
 - Node.js is a JavaScript runtime environment
