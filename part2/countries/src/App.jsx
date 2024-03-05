@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import countriesService from './services/countries'
-
+import weatherService from './services/weather'
 import './App.css'
 
 
@@ -14,17 +12,35 @@ const Filter = ({nameFilter, filterChangeHandler}) => {
   )
 }
 const Country = ( {country} ) => {
+  const [weather, setWeather] = useState(null)
   const langs = []
   for (let prop in country.languages) 
         langs.push(country.languages[prop])
+  useEffect(() => {
+    weatherService
+      .getWeather(country.latlng[0], country.latlng[1])
+      .then(w => {setWeather(w)})
+      .catch(err => {console.log('Error while getAll', err)})
+  }, [country])
+
+  let weatherElem = <></>
+  if (weather) {
+    weatherElem = (<div>
+      <h3>Weather</h3>
+      <p>{weather.icon} {weather.desc}</p>
+      <p>
+      temperature: {weather.current.temperature_2m} {weather.current_units.temperature_2m}
+      </p>
+      </div>)
+  }
   return (
     <div>
       One country: {country.name.common}
-      <div className='country'>
+      <div className='lefty'>
         <h2>{country.name.common}</h2>
         
         <p>capital: {country.capital}</p>
-        <p>area: {country.area} m2</p>
+        <p>area: {country.area} km2</p>
         
         <h3>languages</h3>
         <ul>
@@ -34,14 +50,14 @@ const Country = ( {country} ) => {
         </ul>
 
         <img src={country.flags.png} alt={country.flags.alt}/>
+        {weatherElem}
       </div>
     </div>
   )
 }
 
-const Countries = ({countries, nameFilter}) => {
+const Countries = ({countries, nameFilter, handleSelection}) => {
   const showCountries = countries.filter(c => c.name.common.toLowerCase().includes(nameFilter))
-  
   if (showCountries.length > 10) {
     return (<div>Too many matches, specify a little more.</div>)
   }
@@ -55,18 +71,22 @@ const Countries = ({countries, nameFilter}) => {
     )
   }
   return (
-    <div>
-        {
-        showCountries.map( c => {
-          return <p key={c.name.common}>{c.name.common}</p>
-        })}
-      </div>
+    <ul className='lefty'>
+      {
+      showCountries.map( c => {
+        return (
+          <li key={c.name.common}>
+            {c.name.common} 
+            <button onClick={() => handleSelection(c.name.common.toLowerCase())}>show</button>
+          </li>
+      )})}
+    </ul>
   )
 }
 
 function App() {
   const [nameFilter, setNameFilter] = useState('')
-  const [countries, setCountries] = useState([{name:{common:'Peru'}}])
+  const [countries, setCountries] = useState([])
   
   useEffect(() => {
     countriesService
@@ -76,11 +96,13 @@ function App() {
   }, [])
   
   const handleFilterChange = event => {setNameFilter(event.target.value.toLowerCase())}
+  const handleSelection = countryName => {setNameFilter(countryName.toLowerCase())}
   return (
     <>
       <h1>Explore countries</h1>
       <Filter nameFilter={nameFilter} filterChangeHandler={handleFilterChange}/>
-      <Countries countries={countries} nameFilter={nameFilter}/>
+      <Countries countries={countries} nameFilter={nameFilter} 
+        handleSelection={handleSelection}/>
     </>
   )
 }
