@@ -3,6 +3,7 @@ const cors = require('cors')
 const app = express()
 
 // middleware
+app.use(express.static('dist')) // front as static
 app.use(cors())
 app.use(express.json()) // now the requests have a body (raw data is now json)
 const requestLogger = (request, response, next) => {
