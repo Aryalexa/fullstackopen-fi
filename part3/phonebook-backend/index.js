@@ -3,6 +3,7 @@ const app = express()
 const morgan = require('morgan')
 const cors = require('cors')
 
+app.use(express.static('dist')) // front as static
 app.use(cors())
 app.use(express.json()) // now the requests have a body
 morgan.token('body', function (req, res) { 
@@ -34,7 +35,7 @@ let persons = [
 ]
 
 app.get('/', (request, response) => {
-response.send('<h1>The Phonebook</h1>')
+response.send('<h1>The Phonebook Backend</h1>')
 })
 
 app.get('/info', (request, response) => {
